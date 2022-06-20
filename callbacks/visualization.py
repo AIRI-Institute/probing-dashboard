@@ -72,12 +72,3 @@ def update_visualization(cats, langs):
     chart_layout = draw_map(cats, langs)
     return chart_layout
 
-@app.callback(
-    Output('reload-data', component_property='n_clicks'),
-    Input('reload-data', 'n_clicks')
-)
-def update_output(el_id):
-    global already_scored_df, fig, cat2lines, lang2lines, cat2traces, lang2traces
-    already_scored_df, fig, cat2lines, lang2lines, cat2traces, lang2traces = get_base_fig_info()
-    draw_map(cats=None, langs=None)
-    return el_id
