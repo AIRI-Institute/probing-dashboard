@@ -2,3 +2,6 @@ results/*
 results_new/*
 results_updated/*
 .ipynb_checkpoints
+__pycache__
+*/__pycache__
+.DS_Store
