@@ -20,6 +20,8 @@ already_scored_df, fig, cat2lines, lang2lines, cat2traces, lang2traces = get_bas
 def draw_map(cats=None, langs=None):
     global fig
     # fig.update_traces(visible=False)
+    show_legend=True
+    if cats is None or len(cats) <2: show_legend=False
     if cats is None or not cats: cats = cat2traces.keys()
     if langs is None or not langs: langs = lang2traces.keys()
     
@@ -52,16 +54,26 @@ def draw_map(cats=None, langs=None):
     cats_colors = {cat: color for color, cat in zip(colors_cycle, sorted(cats_to_show))}
     # print(traces_colors)
 
-    
+    cats_shown_on_legend = set()
     def update_trace(trace):
         trace_id = trace.customdata[0].get("id")
         if trace_id not in traces_to_show_ids: return
         representative_cat = [cat for cat in trace.customdata[0]["cats"] if cat in cats][0]
         trace_color = cats_colors[representative_cat]
-        trace.update(visible=True, marker={"color":trace_color})
+        trace.update(visible=True, marker={"color":trace_color}, 
+                     legendgroup=representative_cat, name=representative_cat, showlegend=(representative_cat not in cats_shown_on_legend))
+        cats_shown_on_legend.add(representative_cat)
 
     fig.for_each_trace(update_trace)
-
+    fig.update_layout(showlegend=show_legend,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0,
+            xanchor="right",
+            x=1
+        )
+    )
     return fig
 
 @app.callback(Output('output-data', component_property='figure'),
